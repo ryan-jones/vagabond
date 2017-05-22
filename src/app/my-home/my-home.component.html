@@ -1,0 +1,43 @@
+<div class="container-fluid">
+  <div class="row home-top">
+
+    <div class="col-md-8 left-side">
+      <div class="row map-view">
+        <sebm-google-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">
+          <sebm-map-polygon [paths]="paths">
+            <!-- <sebm-google-map-info-window [disableAutoPan]="true">
+              Hi, this is the content of the <strong>info window</strong>
+            </sebm-google-map-info-window> -->
+          </sebm-map-polygon>
+        </sebm-google-map>
+      </div>
+      <div class="row visa-view">
+        <div class="col-md-12 ">
+          VISA
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-4 right-side">
+      <div class="row">
+        <div class="col-md-12 itinerary">
+          ITINERARY
+        </div>
+
+      </div>
+      <div class="row country-view">
+        <div class="col-md-12 ">
+          COUNTY
+          <div class="form-group">
+            <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search [formControl]="searchControl">
+          </div>
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+  </script>

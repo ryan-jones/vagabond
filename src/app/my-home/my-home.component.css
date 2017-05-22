@@ -1,0 +1,32 @@
+.fluid-container, .row, .left-side, .right-side{
+  margin: 0;
+  padding: 0;
+}
+
+.left-side, .right-side{
+  height: 100vh;
+}
+
+.map-view{
+  height: 70vh;
+  background-color: green;
+}
+
+sebm-google-map{
+  height: 100%;
+}
+
+.visa-view{
+  height: 30vh;
+  background-color: yellow;
+}
+
+.itinerary{
+  background-color: blue;
+  height: 70vh;
+}
+
+.country-view{
+  background-color: red;
+  height: 30vh;
+}

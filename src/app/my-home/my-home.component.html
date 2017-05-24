@@ -14,8 +14,8 @@
 						</select>
 					</div>
           <div class="form-group">
-						<label for="nationalityInput">Nationality</label>
-						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality" >
+						<label for="nationalityInput2">Nationality</label>
+						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality2" >
                 <option value = {{country._id}} *ngFor="let country of countries2">{{country.name}}</option>
 						</select>
 					</div>
@@ -23,6 +23,12 @@
           <button (click)="showCountries()" (click)="showCountries2()">Select</button>
         </div>
         <div class="col-md-6 ">
+          <p> Nation 1: Visa free = "white"</p><br />
+          <p> Nation 1: Visa on arrival = "red"</p><br />
+          <p> Nation 2: Visa free = "black"</p><br />
+          <p> Nation 2: Visa free = "blue"</p><br />
+
+
 
 				</div>
       </div>

@@ -12,9 +12,9 @@
   background-color: green;
 }
 
-sebm-google-map{
-  height: 100%;
-}
+#map-canvas {
+    height: 100%;
+  }
 
 .visa-view{
   height: 30vh;

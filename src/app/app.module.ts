@@ -14,7 +14,8 @@ import {MySignupComponent} from './my-signup/my-signup.component';
 import {MyLoginComponent} from './my-login/my-login.component';
 import { MyNavComponent } from './my-nav/my-nav.component';
 import {AgmCoreModule} from 'angular2-google-maps/core';
-import {ReactiveFormsModule} from '@angular/forms';
+import {CountryService} from './country.service';
+
 
 
 const routes: Routes = [
@@ -48,9 +49,9 @@ const routes: Routes = [
       apiKey: 'AIzaSyD0I9Hi4pdArBe7w4bxrZfLTTKfFKp64nw',
       libraries: ["places"]
     }),
-    ReactiveFormsModule,
+
   ],
-  providers: [],
+  providers: [CountryService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -49,7 +49,7 @@
 					</div>
         </div>
         </div>
-        <button (click)="showCountries()" (click)="showCountries2()">Select</button>
+        <button (click)="loadCountries(selectedNationalityId1, selectedNationalityId2)">Select</button>
 
     </div> <!--div class="col-md-8 left-side"-->
 
@@ -57,7 +57,7 @@
         <div class="row">
           <div class="col-md-12 itinerary">
             <h4>Enter your address</h4>
-      			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="address">
+      			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="address" ng-change="addLocation()">
       			<input id="new-submit" (click)="createPoint()" type="submit" name="" value="Geocode">
           </div>
           </div>

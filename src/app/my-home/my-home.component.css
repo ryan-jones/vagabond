@@ -18,7 +18,7 @@
 
 .visa-view{
   height: 30vh;
-  background-color: yellow;
+  background-color: white;
 }
 
 .itinerary{
@@ -29,4 +29,25 @@
 .country-view{
   background-color: red;
   height: 30vh;
+}
+
+.yellow-box, .red-box, .blue-box, .green-box{
+  height: 10px;
+  width: 50px;
+}
+
+.yellow-box{
+  background-color: yellow;
+}
+
+.red-box{
+  background-color: red;
+}
+
+.blue-box{
+  background-color: blue;
+}
+
+.green-box{
+  background-color: green;
 }

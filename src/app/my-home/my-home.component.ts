@@ -20,6 +20,11 @@ export class MyHomeComponent implements OnInit {
   countries2;
   nation;
   nation2;
+  countryName1;
+  countryName2;
+  address;
+  newAddress;
+  geocoder;
 
 
   constructor(private country: CountryService) { }
@@ -39,6 +44,7 @@ export class MyHomeComponent implements OnInit {
       })
   }
 
+//**************** creates initial map *********
   initiateMap(){
 
     var myOptions = {
@@ -50,10 +56,36 @@ export class MyHomeComponent implements OnInit {
     // initialize the map
     this.map = new google.maps.Map(document.getElementById('map-canvas'),
         myOptions);
+
   }
 
+//*************** Creates a point on the map **********
+  createPoint(){
+    this.geocoder = new google.maps.Geocoder();
+      this.geocodeAddress(this.geocoder, this.map);
+  }
+
+//********************* geocoder function *******************
+  geocodeAddress(geocoder, resultsMap) {
+	  this.address = this.newAddress;
+
+	  geocoder.geocode({'address': this.address}, function(results, status) {
+	    if (status === 'OK') {
+	      var marker = new google.maps.Marker({
+          map: resultsMap,
+	        position: results[0].geometry.location
+	      });
+	      // document.getElementById('new-latitude').value = results[0].geometry.location.lat();
+	      // document.getElementById('new-longitude').value = results[0].geometry.location.lng();
+
+	    } else {
+	      alert('Geocode was not successful for the following reason: ' + status);
+	    }
+	  });
+	}
 
 
+//********************   creates country data layers ***************
   showCountries(selectedNationalityId1, selectedNationalityId2){
     this.initiateMap()
     console.log("selectedNationalityId1", this.selectedNationalityId1);
@@ -62,6 +94,7 @@ export class MyHomeComponent implements OnInit {
     this.country.get(this.selectedNationalityId1)
         .subscribe((nation) => {
           this.nation = nation;
+          this.countryName1 = this.nation;
           console.log(this.nation);
           var onArrivalLayer = new google.maps.Data();
           var freeLayer = new google.maps.Data();
@@ -70,7 +103,7 @@ export class MyHomeComponent implements OnInit {
 
           for( var i=0; i<= this.nation.visaFree.length; i++){
             freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.visaFree[i] + '.geo.json');
-            freeLayer.setStyle({ fillColor: 'white', fillOpacity: 0.5});
+            freeLayer.setStyle({ fillColor: 'yellow', fillOpacity: 0.5});
           }
 
           for(var j=0; j<= this.nation.visaOnArrival.length; j++){
@@ -79,11 +112,11 @@ export class MyHomeComponent implements OnInit {
             onArrivalLayer.setStyle({ fillColor: 'red',  fillOpacity: 0.5});
           }
 
-          for (var f = 0; f <=this.nation.bannedFrom.length; f++){
-            banLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.bannedFrom[i] + '.geo.json')
-            banLayer.setStyle({ fillColor: 'yellow', fillOpacity: 0.5});
-
-          }
+          // for (var f = 0; f <=this.nation.bannedFrom.length; f++){
+          //   banLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.bannedFrom[i] + '.geo.json')
+          //   banLayer.setStyle({ fillColor: 'yellow', fillOpacity: 0.5});
+          //
+          // }
 
           onArrivalLayer.setMap(this.map);
           freeLayer.setMap(this.map);
@@ -94,10 +127,15 @@ export class MyHomeComponent implements OnInit {
           this.showCountries2(selectedNationalityId2);
       } //showCountries
 
+
+
+//****************  Second nation selector *****************
+
       showCountries2(selectedNationalityId2){
         this.country.get(this.selectedNationalityId2)
             .subscribe((nation) => {
               this.nation = nation;
+              this.countryName2 = this.nation;
               console.log('in subscribe', this.nation2);
               var onArrivalLayer2 = new google.maps.Data();
               var freeLayer2 = new google.maps.Data();
@@ -107,20 +145,20 @@ export class MyHomeComponent implements OnInit {
 
               for( var i=0; i<= this.nation.visaFree.length; i++){
                 freeLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.visaFree[i] + '.geo.json');
-                freeLayer2.setStyle({ fillColor: 'black', fillOpacity: 0.5});
+                freeLayer2.setStyle({ fillColor: 'blue', fillOpacity: 0.5});
               }
 
               for(var j=0; j<= this.nation.visaOnArrival.length; j++){
                 onArrivalLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.visaOnArrival[j] + '.geo.json');
-                onArrivalLayer2.setStyle({ fillColor: 'blue', fillOpacity: 0.5});
+                onArrivalLayer2.setStyle({ fillColor: 'green', fillOpacity: 0.5});
               }
 
 
 
-              for (var f = 0; f <=this.nation.bannedFrom.length; f++){
-                banLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.bannedFrom[i] + '.geo.json')
-                banLayer2.setStyle({ fillColor: 'green', fillOpacity: 1});
-              }
+              // for (var f = 0; f <=this.nation.bannedFrom.length; f++){
+              //   banLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.bannedFrom[i] + '.geo.json')
+              //   banLayer2.setStyle({ fillColor: 'black', fillOpacity: 1});
+              // }
 
               onArrivalLayer2.setMap(this.map);
               freeLayer2.setMap(this.map);

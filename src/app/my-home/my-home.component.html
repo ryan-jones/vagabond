@@ -6,6 +6,32 @@
         <div id="map-canvas"></div>
       </div>
       <div class="row visa-view">
+        <div class="row">
+          <div class="col-md-3">
+              <div class="col-md-6 yellow-box"></div>
+              <div class="col-md-6">
+                Visa-free for {{countryName1.name}}
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="col-md-6 red-box"></div>
+              <div class="col-md-6">
+                Visa-on-arrival for {{countryName1.name}}
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="col-md-6 blue-box"></div>
+              <div class="col-md-6">
+                Visa-free for {{countryName2.name}}
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="col-md-6 green-box"></div>
+              <div class="col-md-6">
+                Visa-on-arrival for {{countryName2.name}}
+              </div>
+          </div>
+        </div>
         <div class="col-md-6 ">
           <div class="form-group">
 						<label for="nationalityInput">Nationality</label>
@@ -13,44 +39,36 @@
                 <option value = {{country._id}} *ngFor="let country of countries">{{country.name}}</option>
 						</select>
 					</div>
+        </div>
+        <div class="col-md-6 ">
           <div class="form-group">
 						<label for="nationalityInput2">Nationality</label>
 						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality2" >
                 <option value = {{country._id}} *ngFor="let country of countries2">{{country.name}}</option>
 						</select>
 					</div>
-
-          <button (click)="showCountries()" (click)="showCountries2()">Select</button>
         </div>
-        <div class="col-md-6 ">
-          <p> Nation 1: Visa free = "white"</p><br />
-          <p> Nation 1: Visa on arrival = "red"</p><br />
-          <p> Nation 2: Visa free = "black"</p><br />
-          <p> Nation 2: Visa free = "blue"</p><br />
-
-
-
-				</div>
-      </div>
-    </div>
-
-    </div>
-
-    <div class="col-md-4 right-side">
-      <div class="row">
-        <div class="col-md-12 itinerary">
-          ITINERARY
         </div>
+        <button (click)="showCountries()" (click)="showCountries2()">Select</button>
 
-      </div>
-      <div class="row country-view">
-        <div class="col-md-12 ">
-          COUNTY
-          <div class="form-group">
-            <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search>
+    </div> <!--div class="col-md-8 left-side"-->
+
+      <div class="col-md-4 right-side">
+        <div class="row">
+          <div class="col-md-12 itinerary">
+            <h4>Enter your address</h4>
+      			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="address">
+      			<input id="new-submit" (click)="createPoint()" type="submit" name="" value="Geocode">
+          </div>
+          </div>
+          <div class="row country-view">
+            <div class="col-md-12 ">
+              COUNTY
+              <div class="form-group">
+                <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      </div>
-    </div>
+</div>

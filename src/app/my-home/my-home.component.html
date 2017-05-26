@@ -1,74 +1,93 @@
 <div class="container-fluid">
   <div class="row" id="home-top">
 
-    <div class="col-md-8 left-side">
+    <div class="col-md-9 left-side">
       <div class="row map-view">
         <div id="map-canvas"></div>
       </div>
       <div class="row visa-view">
-        <!-- <div class="row">
-          <div class="col-md-3">
-              <div class="col-md-6 yellow-box"></div>
-              <div class="col-md-6">
-                Visa-free for {{countryName1.name}}
+        <div class="row color-row">
+          <div class="col-md-3 color-column">
+              <div class="col-md-3 yellow-box"></div>
+              <div class="col-md-9">
+                 <strong>Visa-free:</strong><br />{{countryName1.name}}
               </div>
           </div>
-          <div class="col-md-3">
-              <div class="col-md-6 red-box"></div>
-              <div class="col-md-6">
-                Visa-on-arrival for {{countryName1.name}}
+          <div class="col-md-3 color-column">
+              <div class="col-md-3 red-box"></div>
+              <div class="col-md-9">
+                 <strong>VOA:</strong><br />{{countryName1.name}}
               </div>
           </div>
-          <div class="col-md-3">
-              <div class="col-md-6 blue-box"></div>
-              <div class="col-md-6">
-                Visa-free for {{countryName2.name}}
+          <div class="col-md-3 color-column">
+              <div class="col-md-3 blue-box"></div>
+              <div class="col-md-9">
+                  <strong>Visa-free:</strong><br />{{countryName2.name}}
               </div>
           </div>
-          <div class="col-md-3">
-              <div class="col-md-6 green-box"></div>
-              <div class="col-md-6">
-                Visa-on-arrival for {{countryName2.name}}
+          <div class="col-md-3 color-column">
+              <div class="col-md-3 green-box"></div>
+              <div class="col-md-9">
+                 <strong>VOA:</strong><br />{{countryName2.name}}
               </div>
           </div>
-        </div> -->
-        <div class="col-md-6 ">
-          <div class="form-group">
-						<label for="nationalityInput">Nationality</label>
-						<select [(ngModel)]="selectedNationalityId1" class="form-control" id="nationality" name="nationality" >
-                <option value = {{country._id}} *ngFor="let country of countries">{{country.name}}</option>
-						</select>
-					</div>
         </div>
-        <div class="col-md-6 ">
-          <div class="form-group">
-						<label for="nationalityInput2">Nationality</label>
-						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality2" >
-                <option value = {{country._id}} *ngFor="let country of countries2">{{country.name}}</option>
-						</select>
-					</div>
+        <div class="row nation-row">
+          <div class="col-md-6 nation-box">
+            <div class="form-group">
+  						<label for="nationalityInput">Nationality 1</label>
+  						<select [(ngModel)]="selectedNationalityId1" class="form-control" id="nationality" name="nationality" >
+                  <option value = {{country._id}} *ngFor="let country of countries">{{country.name}}</option>
+  						</select>
+  					</div>
+          </div>
+          <div class="col-md-6 nation-box">
+            <div class="form-group">
+  						<label for="nationalityInput2">Nationality 2</label>
+  						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality2" >
+                  <option value = {{country._id}} *ngFor="let country of countries2">{{country.name}}</option>
+  						</select>
+  					</div>
+          </div>
         </div>
-        </div>
-        <button (click)="loadCountries(selectedNationalityId1, selectedNationalityId2)">Select</button>
+        <button class="country-button" (click)="loadCountries(selectedNationalityId1, selectedNationalityId2)">Select</button>
+
+      </div>
 
     </div> <!--div class="col-md-8 left-side"-->
 
-      <div class="col-md-4 right-side">
-        <div class="row">
-          <div class="col-md-12 itinerary">
-            <h4>Enter your address</h4>
-      			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="address" ng-change="addLocation()">
-      			<input id="new-submit" (click)="createPoint()" type="submit" name="" value="Geocode">
-          </div>
-          </div>
-          <div class="row country-view">
-            <div class="col-md-12 ">
-              COUNTY
-              <div class="form-group">
-                <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search>
+    <div class="col-md-3 right-side">
+        <div class="itinerary-box">
+          <div class="col-md-1"></div>
+          <div class="col-md-10 itinerary">
+            <h4><span class="white">Create your itinerary</span></h4>
+      			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="address" >
+            <input id="new-date" value="" type="date" name="date"/>
+      			<input id="new-submit" (click)="createPoint()" type="submit" name="" value="+">
+            <!-- <input id="new-delete" (click)="deletePoint()" type="submit" name="" value="-"> -->
+            <div  class="location-box">
+              <div *ngFor="let location of locations, let i = index">
+                <div class="location-list">
+                  <strong>{{location.name}} {{location.country}}</strong> {{location.date | date:'EEE MMMM d, y'}}
+                </div>
+                <p>
+                  {{itineraryDays[i]}} Days
+                </p>
               </div>
+
+
+            </div>
+          </div>
+          <div class="col-md-1"></div>
+        </div>
+        <div class="row country-view">
+          <div class="col-md-12 ">
+            COUNTY
+            <div class="form-group">
+              <input placeholder="search for location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #search>
             </div>
           </div>
         </div>
-      </div>
+    </div>
+  </div>
 </div>

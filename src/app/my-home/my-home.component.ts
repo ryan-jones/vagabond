@@ -36,7 +36,10 @@ export class MyHomeComponent implements OnInit {
   itineraryDays: Array<any>=[];
   totalItinerary;
   sum: any;
-  natA;
+  deleteLocation;
+  marker;
+  indexTarget;
+  locationIndex;
 
 
   freeLayer;
@@ -173,15 +176,15 @@ totalDays(){
 
 }
 
+
+
 //*************** Creates a point/polyline on the map **********
   createPoint(){
 
     //date input field
     this.place.date = document.getElementById('new-date')['valueAsDate'];
-    console.log(this.place.date);
     this.place.date.autocomplete;
     this.locations.push(this.place);
-
     this.dates.push(this.place.date);
 
 //turns dates into numerical values for comparison
@@ -191,9 +194,9 @@ totalDays(){
         this.diffDays = 0;
       }
     }
+
     //array of differences between dates to be loaded on the view
     this.itineraryDays.push(this.diffDays);
-
     this.totalDays();
 
 //geocodes the address, creates a marker and polyline segment
@@ -218,12 +221,11 @@ totalDays(){
 
            });
          that.flightPath.setMap(that.map);
-
-         var marker = new google.maps.Marker({
+         that.marker = new google.maps.Marker({
            position: point,
            map: that.map
          })
-         marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+         that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
 	     } else {
 	        alert('Geocode was not successful for the following reason: ' + status);
 	     }
@@ -232,18 +234,7 @@ totalDays(){
   }
 
 
-//****************** Get total days *******************
 
-  loadBothCountries(a,b){
-    this.natA = this.showCountries(a);
-
-
-    this.natA(function(){
-      this.showCountries2(b);
-    });
-
-
-  }
 
 
 
@@ -251,12 +242,12 @@ totalDays(){
 
 
 //********************** shows country layers *************
-// loadCountries(selectedNationalityId1, selectedNationalityId2){
-//
-//
-//   this.showCountries(selectedNationalityId1);
-//   this.showCountries2(selectedNationalityId2);
-// }
+ loadCountries(selectedNationalityId1, selectedNationalityId2){
+
+
+  this.showCountries(selectedNationalityId1);
+  this.showCountries2(selectedNationalityId2);
+}
 
 //********************   creates country data layers ***************
   showCountries(selectedNationalityId1){
@@ -335,4 +326,17 @@ totalDays(){
           });
         } //showCountries2
 
-}
+
+        deletePoint(location){
+          console.log("this.locations before", this.locations);
+          console.log("location", location)
+          this.flightPath.setMap(null);
+          this.marker.setMap(null);
+          this.locationIndex = this.locations;
+          this.indexTarget = this.locationIndex.indexOf(location);
+          this.locations.splice(this.indexTarget, 1);
+          console.log("this.locations after", this.locations);
+
+
+        }
+  }

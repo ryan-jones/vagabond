@@ -40,6 +40,8 @@ export class MyHomeComponent implements OnInit {
   marker;
   indexTarget;
   locationIndex;
+  allMarkers: Array<any> = [];
+  allFlightPaths: Array<any> = [];
 
 
   freeLayer;
@@ -220,12 +222,14 @@ totalDays(){
              strokeWeight: 4,
 
            });
+           that.allFlightPaths.push(that.flightPath)
          that.flightPath.setMap(that.map);
          that.marker = new google.maps.Marker({
            position: point,
            map: that.map
          })
          that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+         that.allMarkers.push(that.marker)
 	     } else {
 	        alert('Geocode was not successful for the following reason: ' + status);
 	     }
@@ -243,31 +247,59 @@ totalDays(){
 
 //********************** shows country layers *************
  loadCountries(selectedNationalityId1, selectedNationalityId2){
+  let countriesArray = [selectedNationalityId1, selectedNationalityId2]
 
+  let colorsArray = {
+    visaFree: ['red', 'blue'],
+    visaOnArrival: ['black', 'white']
+  }
+  let index = 0
+  this.showCountries(countriesArray, colorsArray, index);
 
-  this.showCountries(selectedNationalityId1);
-  this.showCountries2(selectedNationalityId2);
 }
 
 //********************   creates country data layers ***************
-  showCountries(selectedNationalityId1){
+  showCountries(countriesArray, colorsArray, index ){
 
+    if(index == 2){
+      return
+    }
 
-    this.country.get(this.selectedNationalityId1)
+    this.country.get(countriesArray[index])
         .subscribe((nation) => {
           this.nation = nation;
           this.countryName1 = this.nation;
-          var onArrivalLayer = new google.maps.Data();
-          this.freeLayer = new google.maps.Data();
-          var banLayer = new google.maps.Data();
+          var self = this
+
+          let visaKindArray = ['visaFree', 'visaOnArrival' ]
+          let visaKindIndex = 0
 
 
-          for( var i=0; i<= this.nation.visaFree.length; i++){
-            this.freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.visaFree[i] + '.geo.json');
-            this.freeLayer.setStyle({ fillColor: 'red', fillOpacity: 0.7});
+            let counter = 0
+            function starter(visaKind){
 
-          }
+              console.log(visaKindIndex)
 
+              let freeLayer = new google.maps.Data();
+
+              freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + self.nation[visaKind][counter] + '.geo.json');
+              freeLayer.setStyle({ fillColor: colorsArray[visaKind][index], fillOpacity: 0.7});
+              freeLayer.setMap(self.map);
+              counter++
+              if(counter == self.nation[visaKind].length){
+                counter = 0
+                if(visaKind == 'visaOnArrival'){
+                  index ++
+                  self.showCountries(countriesArray, colorsArray, index);
+                } else {
+                  visaKindIndex++
+                  starter(visaKindArray[visaKindIndex])
+                }
+              } else {
+                starter(visaKindArray[visaKindIndex])
+              }
+            }
+            starter(visaKindArray[visaKindIndex])
           // for(var j=0; j<= this.nation.visaOnArrival.length; j++){
           //   console.log("list nation1: ", this.nation.visaOnArrival[j])
           //
@@ -280,9 +312,9 @@ totalDays(){
           //   banLayer.setStyle({ fillColor: 'black', fillOpacity: 1});
           //
           // }
-          this.freeLayer.setMap(this.map);
-          onArrivalLayer.setMap(this.map);
-          banLayer.setMap(this.map);
+
+          // onArrivalLayer.setMap(this.map);
+          // banLayer.setMap(this.map);
 
 
 
@@ -290,52 +322,47 @@ totalDays(){
       } //showCountries
 
 
-    showCountries2(selectedNationalityId2){
-      this.country.get(this.selectedNationalityId2)
-          .subscribe((nation2) => {
-            this.nation2 = nation2;
-            this.countryName2 = this.nation2;
-            var onArrivalLayer2 = new google.maps.Data();
-            this.freeLayer2 = new google.maps.Data();
-            var banLayer2 = new google.maps.Data();
+        deletePoint(locationInput){
+
+          this.allFlightPaths.forEach((flightPath)=>{
+            flightPath.setMap(null);
+          })
+          this.allFlightPaths = []
+          console.log('flightPaths', this.allFlightPaths)
+          this.allMarkers.forEach((marker)=>{
+            marker.setMap(null);
+          })
+          this.allMarkers = []
+          console.log('allMarkers', this.allMarkers)
+          this.locations = this.locations.filter((savedLocation)=>{
+            return savedLocation.id != locationInput.value
+          })
+          console.log('this.locations', this.locations)
+
+          this.arrayOfTravel = []
+          console.log('arraOfTravel', this.arrayOfTravel)
+          this.locations.forEach((location)=>{
+            var point = {lat: location.geometry.location.lat(), lng: location.geometry.location.lng()}
 
 
-            for( var i=0; i<= this.nation2.visaFree.length; i++){
+            this.arrayOfTravel.push(point);
 
-              this.freeLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation2.visaFree[i] + '.geo.json');
-              this.freeLayer2.setStyle({ fillColor: 'blue', fillOpacity: 0.7});
-            }
+             this.flightPath = new google.maps.Polyline({
+                 path: this.arrayOfTravel,
+                 geodesic: true,
+                 strokeColor: 'yellow',
+                 strokeOpacity: 1.0,
+                 strokeWeight: 4,
 
-            // for(var j=0; j<= this.nation2.visaOnArrival.length; j++){
-            //   console.log("list nation2: ", this.nation2.visaOnArrival[j])
-            //
-            //   onArrivalLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation2.visaOnArrival[j] + '.geo.json');
-            //   onArrivalLayer2.setStyle({ fillColor: 'white', fillOpacity: 0.7});
-            // }
+               });
+             this.flightPath.setMap(this.map);
+             this.marker = new google.maps.Marker({
+               position: point,
+               map: this.map
+             })
+             this.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+          })
 
-
-            // for (var j = 0; j <= this.nation2.bannedFrom.length; j++){
-            //   banLayer2.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation2.bannedFrom[j] + '.geo.json')
-            //   banLayer2.setStyle({ fillColor: 'black', fillOpacity: 1});
-            //
-            // }
-            onArrivalLayer2.setMap(this.map);
-            this.freeLayer2.setMap(this.map);
-            banLayer2.setMap(this.map);
-
-          });
-        } //showCountries2
-
-
-        deletePoint(location){
-          console.log("this.locations before", this.locations);
-          console.log("location", location)
-          this.flightPath.setMap(null);
-          this.marker.setMap(null);
-          this.locationIndex = this.locations;
-          this.indexTarget = this.locationIndex.indexOf(location);
-          this.locations.splice(this.indexTarget, 1);
-          console.log("this.locations after", this.locations);
 
 
         }

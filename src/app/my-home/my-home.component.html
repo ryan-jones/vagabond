@@ -74,7 +74,8 @@
                     </p>
                     <div class="location-list">
                       <strong>{{location.name}} {{location.country}}</strong> {{location.date | date:'EEE MMMM d, y'}}
-                      <input class="delete" type="submit"  value="-" (click)="deletePoint(deleteLocation)" [(ngModel)]="deleteLocation"/>
+                      <input type="hidden" name="" #locationId [(ngModel)]="location.id">
+                      <input class="delete" type="submit" value="" (click)="deletePoint(locationId)" />
                     </div>
 
                 </div>

@@ -13,12 +13,14 @@ import { MyNavComponent } from './my-nav/my-nav.component';
 import {AgmCoreModule} from 'angular2-google-maps/core';
 import {CountryService} from './country.service';
 import {WarningService} from './warning.service';
+import {SessionService} from './session.service';
 import {UserService} from './user.service';
 import {ProfileOverviewComponent} from './profile-overview/profile-overview.component';
 import {ProfileEditComponent} from './profile-edit/profile-edit.component';
 import { MySignupFormComponent } from './my-signup-form/my-signup-form.component';
 import { ProfileCountryVisitComponent } from './profile-country-visit/profile-country-visit.component';
 import { ProfileItinerariesComponent } from './profile-itineraries/profile-itineraries.component';
+import { FileSelectDirective } from "ng2-file-upload";
 
 
 
@@ -49,7 +51,8 @@ const routes: Routes = [
     ProfileOverviewComponent,
     MySignupFormComponent,
     ProfileCountryVisitComponent,
-    ProfileItinerariesComponent
+    ProfileItinerariesComponent,
+    FileSelectDirective
 
   ],
   imports: [
@@ -64,7 +67,7 @@ const routes: Routes = [
     }),
 
   ],
-  providers: [CountryService, WarningService, UserService],
+  providers: [CountryService, WarningService, SessionService, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

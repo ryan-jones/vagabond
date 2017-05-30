@@ -1,34 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import {UserService} from '.././user.service';
-
+import {Router, ActivatedRoute } from '@angular/router';
+import {UserService} from '../user.service';
 declare var google: any;
 
 
 @Component({
   selector: 'app-profile-overview',
   templateUrl: './profile-overview.component.html',
-  styleUrls: ['./profile-overview.component.css']
+  styleUrls: ['./profile-overview.component.css'],
+  providers: [UserService]
 })
 
 export class ProfileOverviewComponent implements OnInit {
-
-
-  constructor(private route: ActivatedRoute, private userService: UserService) { }
-
   user: any;
+
+  constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) { }
+
+
   map: any;
   view;
 
   ngOnInit() {
-    // this.route.params  //receives the params sent from ViewDetails() method in contact-list.component.ts
-    //   .subscribe((params) => {
-    //     this.user = this.userService.get(+params['id']);
-    // });
+    this.route.params.subscribe(params => {
+      this.getUserDetails(params['id']);
+    });
     this.initiateMap();
 
     console.log('initiate', this.view);
   }
+
+  getUserDetails(id){
+    this.userService.get(id)
+      .subscribe((user)=> {
+        this.user = user
+      });
+  }
+
+  deleteUser(){
+    if (window.confirm('Are you sure?')) {
+    	this.userService.remove(this.user._id)
+      .subscribe(() => {
+        this.router.navigate(['']);
+      });
+  	}
+  }
+
 
   initiateMap(){
 

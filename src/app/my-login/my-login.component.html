@@ -6,7 +6,7 @@
     <form (ngSubmit)="submitForm(myForm)" #myForm="ngForm" novalidate *ngIf="!user">
 
           <p>
-            <input type="text" name="username" [(ngModel)]="formInfo.username" #myUsername="ngModel" placeholder="My Username" required />
+            <input type="text" name="username" [(ngModel)]="name.username" #myUsername="ngModel" placeholder="My Username" required />
           </p>
               <div *ngIf="myUsername.errors && (myUsername.dirty || myUsername.touched)">
                 <p class="error" [hidden]="!myUsername.errors.required">
@@ -14,7 +14,7 @@
                 </p>
               </div>
           <p>
-            <input type="password" name="password" [(ngModel)]="formInfo.password" placeholder="My Password"#myPassword="ngModel" required  minlength="6"/>
+            <input type="password" name="password" [(ngModel)]="name.password" placeholder="My Password" #myPassword="ngModel" required  minlength="6"/>
           </p>
               <div *ngIf="myPassword.errors && (myPassword.dirty || myPassword.touched)">
                 <p class="error" [hidden]="!myPasswords.errors.minlength">

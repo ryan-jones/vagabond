@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { SessionService } from '../session.service';
 import {Router} from '@angular/router';
-import {UserService} from '../user.service';
+
 
 @Component({
   selector: 'app-my-login',
@@ -9,52 +10,30 @@ import {UserService} from '../user.service';
 })
 export class MyLoginComponent implements OnInit {
 
-  formInfo = {
+  user = {
       username: '',
       password: ''
     };
 
-  user: any;
+
   error: string;
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private router: Router, private session: SessionService) { }
 
     ngOnInit() {
-      this.userService.isLoggedIn()
-        .subscribe(
-          (user) => this.successCb(user)
-        );
     }
 
-    login(){
-      this.userService.login(this.formInfo)
-        .subscribe(
-          (user) => this.successCb(user),
-          (err) => this.errorCb(err)
-        );
-    }
-
-    logout() {
-    this.userService.logout()
-      .subscribe(
-        () => this.successCb(null),
-        (err) => this.errorCb(err)
-      );
-    }
-
-    errorCb(err) {
-      this.error = err;
-      this.user = null;
-    }
-
-    successCb(user) {
-      this.user = user;
-      this.error = null;
-    }
-
-    goToSignup(){
-        this.router.navigate(['/signup']);
+    login() {
+        this.session.login(this.user)
+    				        .subscribe(result => {
+    				            if (result === true) {
+    			                // login successful
+    			                this.router.navigate(['/user']);
+    			         			} else {
+    			                // login failed
+    			                this.error = 'Username or password is incorrect';
+    				            }
+    				        });
       }
-
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
+import { SessionService } from '../session.service';
 
 @Component({
   selector: 'app-my-nav',
@@ -8,7 +9,10 @@ import {Router} from '@angular/router';
 })
 export class MyNavComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private session: SessionService
+  ) { }
 
   ngOnInit() {
   }
@@ -31,5 +35,9 @@ export class MyNavComponent implements OnInit {
 
     goToUser(){
       this.router.navigate(['user']);
+    }
+
+    logout(){
+      this.session.logout();
     }
 }

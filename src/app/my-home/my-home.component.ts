@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import {CountryService} from '../country.service';
 import {WarningService} from '../warning.service';
+import {SessionService} from '../session.service';
+import { FileUploader } from "ng2-file-upload";
 
 declare var google: any;
 
@@ -9,10 +11,24 @@ declare var google: any;
   selector: 'app-my-home',
   templateUrl: './my-home.component.html',
   styleUrls: ['./my-home.component.css'],
-  providers: [CountryService, WarningService]
+  providers: [CountryService, WarningService, SessionService]
 })
 
 export class MyHomeComponent implements OnInit {
+
+  uploader: FileUploader = new FileUploader({
+    url: `http://localhost:3000/api/phones/`,
+    authToken: `JWT ${this.session.token}`
+  });
+
+  newItinerary = {
+    name: '',
+    nationality1: '',
+    nationality2: '',
+    plan: []
+  };
+
+  feedback:string;
 
   selectedNationalityId1;
   selectedNationalityId2;
@@ -44,20 +60,30 @@ export class MyHomeComponent implements OnInit {
   allFlightPaths: Array<any> = [];
   allTravelArray: Array<any> = [];
   colorLayers: Array<any> = [];
-
+  layers: Array<any> = [];
 
   freeLayer;
   freeLayer2;
 
 
 
-  constructor(private country: CountryService, private status: WarningService) { }
+  constructor(private country: CountryService, private status: WarningService, private session: SessionService) { }
 
 
 
   ngOnInit() {
 
+
     this.initiateMap();
+
+    this.uploader.onSuccessItem = (item, response) => {
+      this.feedback = JSON.parse(response).message;
+    };
+
+    this.uploader.onErrorItem = (item, response, status, headers) => {
+      this.feedback = JSON.parse(response).message;
+    };
+
 
     this.country.getList()
       .subscribe((countries) => {
@@ -183,15 +209,6 @@ totalDays(){
 
 
 
-
-
-
-
-
-
-
-
-
 //********************** shows country layers *************
  loadCountries(selectedNationalityId1, selectedNationalityId2){
   let countriesArray = [selectedNationalityId1, selectedNationalityId2]
@@ -200,6 +217,7 @@ totalDays(){
     visaFree: ['red', 'blue'],
     visaOnArrival: ['yellow', 'green']
   }
+
   let index = 0
   this.showCountries(countriesArray, colorsArray, index);
 }
@@ -214,24 +232,56 @@ totalDays(){
     this.country.get(countriesArray[index])
         .subscribe((nation) => {
           this.nation = nation;
+          console.log("nation", nation)
+
           this.countryName1 = this.nation;
+
           var self = this
 
-          let visaKindArray = ['visaFree', 'visaOnArrival' ]
-          let visaKindIndex = 0
+          let visaKindArray = ['visaFree', 'visaOnArrival' ];
+          let visaKindIndex = 0;
 
 
-            let counter = 0
-            function starter(visaKind){
+          let counter = 0;
 
-              console.log(visaKindIndex)
+          var test = 0;
 
-              let freeLayer = new google.maps.Data();
+          function starter(visaKind){
 
-              freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + self.nation[visaKind][counter] + '.geo.json');
-              freeLayer.setStyle({ fillColor: colorsArray[visaKind][index], fillOpacity: 0.7});
+          let freeLayer = new google.maps.Data();
+
+          if(index === 0){
+
+
+                console.log( "country", self.nation[visaKind][counter])
+            freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + self.nation[visaKind][counter] + '.geo.json');
+              freeLayer.setStyle({ fillColor: colorsArray[visaKind][index], fillOpacity: 0.5, title: self.nation[visaKind][counter]});
+
               freeLayer.setMap(self.map);
               counter++
+
+              self.layers.push(freeLayer)
+            } else {
+
+                counter++
+             self.layers.forEach(function(layer){
+               if(layer.style.title == self.nation[visaKind][counter]) {
+                  // console.log("layer", layer)
+
+                 // console.log(self.nation[visaKind][counter])
+                  //  layer.setMap(null);
+                   layer.setStyle({ fillColor: "black", fillOpacity: 1});
+                  //    layer.setMap(self.map);
+                  //  layer.setMap(self.map);
+                }else {
+                  freeLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + self.nation[visaKind][counter] + '.geo.json');
+
+                    freeLayer.setStyle({ fillColor: colorsArray[visaKind][index], fillOpacity: 1, title: self.nation[visaKind][counter]});
+                    freeLayer.setMap(self.map);
+                }})
+              }
+
+
               if(counter == self.nation[visaKind].length){
                 counter = 0
                 if(visaKind == 'visaOnArrival'){
@@ -239,143 +289,175 @@ totalDays(){
                   self.showCountries(countriesArray, colorsArray, index);
                 } else {
                   visaKindIndex++
+
+                  starter(visaKindArray[visaKindIndex])
+                  }
+                } else {
+
                   starter(visaKindArray[visaKindIndex])
                 }
-              } else {
+                }
+
                 starter(visaKindArray[visaKindIndex])
-              }
-            }
-            starter(visaKindArray[visaKindIndex])
-          // for(var j=0; j<= this.nation.visaOnArrival.length; j++){
-          //   console.log("list nation1: ", this.nation.visaOnArrival[j])
-          //
-          //   onArrivalLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.visaOnArrival[j] + '.geo.json');
-          //   onArrivalLayer.setStyle({ fillColor: 'yellow', fillOpacity: 0.7});
-          // }
-
-          // for (var f = 0; f <=this.nation.bannedFrom.length; f++){
-          //   banLayer.loadGeoJson('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/' + this.nation.bannedFrom[f] + '.geo.json')
-          //   banLayer.setStyle({ fillColor: 'black', fillOpacity: 1});
-          //
-          // }
-
-          // onArrivalLayer.setMap(this.map);
-          // banLayer.setMap(this.map);
-
-
-
-        })
+              })
       } //showCountries
 
+makeBlack(){
+  console.log("maop",this.map)
+  console.log("data", this.map.data)
+  this.map.data.forEach((data)=>{
+    console.log("data", data)
+  })
+  setTimeout(()=>{
 
-      //*************** Creates a point/polyline on the map **********
-        createPoint(){
+    this.layers.forEach((layer)=>{
 
-          //date input field
-          this.place.date = document.getElementById('new-date')['valueAsDate'];
-          this.place.date.autocomplete;
-          this.locations.push(this.place);
-          this.dates.push(this.place.date);
+     //  if(layer.style.title == self.nation[visaKind][counter]) {
 
-      //turns dates into numerical values for comparison
-          if(this.dates.length >=0){
-            this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
-            if(isNaN(this.diffDays)===true){
-              this.diffDays = 0;
-            }
-          }
+        // console.log(self.nation[visaKind][counter])
+          // layer.setMap(null);
+          this.map.data.setStyle({visible: false});
+          // layer.setMap(this.map);
+     //  }
+    })
+  },10000)
 
-          //array of differences between dates to be loaded on the view
-          this.itineraryDays.push(this.diffDays);
-          this.totalDays();
+}
+  //*************** Creates a point/polyline on the map **********
+    createPoint(){
 
-      //geocodes the address, creates a marker and polyline segment
-          this.geocoder = new google.maps.Geocoder();
-          var that = this;
-      	  this.address = this.newAddress;
+      //date input field
+      this.place.date = document.getElementById('new-date')['valueAsDate'];
+      this.place.date.autocomplete;
+      this.locations.push(this.place);
+      this.dates.push(this.place.date);
 
-      	  this.geocoder.geocode({'address': this.address}, function(results, status) {
-
-      	     if (status === 'OK') {
-               var point = {lat: that.place.geometry.location.lat(), lng: that.place.geometry.location.lng()}
-
-
-      	       that.arrayOfTravel.push(point);
-               that.allTravelArray.push(that.arrayOfTravel);
-
-               that.flightPath = new google.maps.Polyline({
-                   path: that.arrayOfTravel,
-                   geodesic: true,
-                   strokeColor: 'yellow',
-                   strokeOpacity: 1.0,
-                   strokeWeight: 4,
-
-                 });
-                 that.allFlightPaths.push(that.flightPath)
-               that.flightPath.setMap(that.map);
-               that.marker = new google.maps.Marker({
-                 position: point,
-                 map: that.map
-               })
-
-
-               that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
-               that.allMarkers.push(that.marker)
-               console.log('allFlightPaths create', that.allFlightPaths)
-               console.log('allMarkers create', that.allMarkers)
-      	     } else {
-      	        alert('Geocode was not successful for the following reason: ' + status);
-      	     }
-      	  });
-
+  //turns dates into numerical values for comparison
+      if(this.dates.length >=0){
+        this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
+        if(isNaN(this.diffDays)===true){
+          this.diffDays = 0;
         }
+      }
+
+      //array of differences between dates to be loaded on the view
+      this.itineraryDays.push(this.diffDays);
+      this.totalDays();
+
+  //geocodes the address, creates a marker and polyline segment
+      this.geocoder = new google.maps.Geocoder();
+      var that = this;
+  	  this.address = this.newAddress;
+
+  	  this.geocoder.geocode({'address': this.address}, function(results, status) {
+
+  	     if (status === 'OK') {
+           var point = {lat: that.place.geometry.location.lat(), lng: that.place.geometry.location.lng()}
 
 
-        deletePoint(locationInput){
+  	       that.arrayOfTravel.push(point);
+           that.allTravelArray.push(that.arrayOfTravel);
 
-          this.allFlightPaths.forEach((flightPath)=>{
-            flightPath.setMap(null)
-          })
-         this.allFlightPaths = []
+           that.flightPath = new google.maps.Polyline({
+               path: that.arrayOfTravel,
+               geodesic: true,
+               strokeColor: 'yellow',
+               strokeOpacity: 1.0,
+               strokeWeight: 4,
 
-          this.allMarkers.forEach((marker)=>{
-             marker.setMap(null);
-
-          })
-          this.allMarkers = []
-
-
-          this.locations = this.locations.filter((savedLocation)=>{
-            return savedLocation.id != locationInput.value
-          })
-
-           this.arrayOfTravel = []
-          this.locations.forEach((location)=>{
-
-            var point = {lat: location.geometry.location.lat(), lng: location.geometry.location.lng()}
+             });
+             that.allFlightPaths.push(that.flightPath)
+           that.flightPath.setMap(that.map);
+           that.marker = new google.maps.Marker({
+             position: point,
+             map: that.map
+           })
 
 
-            this.arrayOfTravel.push(point);
+           that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+           that.allMarkers.push(that.marker)
 
-             this.flightPath = new google.maps.Polyline({
-                 path: this.arrayOfTravel,
-                 geodesic: true,
-                 strokeColor: 'yellow',
-                 strokeOpacity: 1.0,
-                 strokeWeight: 4,
+  	     } else {
+  	        alert('Geocode was not successful for the following reason: ' + status);
+  	     }
+  	  });
 
-               });
-             this.flightPath.setMap(this.map);
+    }
 
 
-             this.allFlightPaths.push(this.flightPath)
-             this.marker = new google.maps.Marker({
-               position: point,
-               map: this.map
-             })
-             this.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
-              this.allMarkers.push(this.marker)
-          })
+  deletePoint(locationInput){
 
-        }
+    this.allFlightPaths.forEach((flightPath)=>{
+      flightPath.setMap(null)
+    })
+   this.allFlightPaths = []
+
+    this.allMarkers.forEach((marker)=>{
+       marker.setMap(null);
+
+    })
+    this.allMarkers = []
+
+
+    this.locations = this.locations.filter((savedLocation)=>{
+      return savedLocation.id != locationInput.value
+    })
+
+     this.arrayOfTravel = []
+
+     if(this.dates.length >=0){
+       this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
+       if(isNaN(this.diffDays)===true){
+         this.diffDays = 0;
+       }
+     }
+
+     //array of differences between dates to be loaded on the view
+     this.itineraryDays.push(this.diffDays);
+     this.totalDays();
+    this.locations.forEach((location)=>{
+
+      this.dates.push(this.locations[location].date);
+
+
+      var point = {lat: location.geometry.location.lat(), lng: location.geometry.location.lng()}
+
+
+      this.arrayOfTravel.push(point);
+
+       this.flightPath = new google.maps.Polyline({
+           path: this.arrayOfTravel,
+           geodesic: true,
+           strokeColor: 'yellow',
+           strokeOpacity: 1.0,
+           strokeWeight: 4,
+
+         });
+       this.flightPath.setMap(this.map);
+
+
+       this.allFlightPaths.push(this.flightPath)
+       this.marker = new google.maps.Marker({
+         position: point,
+         map: this.map
+       })
+       this.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+        this.allMarkers.push(this.marker)
+    })
+
   }
+
+  submit() {
+
+    this.newItinerary.plan = this.arrayOfTravel;
+
+    this.uploader.onBuildItemForm = (item, form) => {
+      form.append('name', this.newItinerary.name);
+      form.append('plan', this.newItinerary.plan);
+      form.append('nationality1', this.newItinerary.nationality1);
+      form.append('nationality2', this.newItinerary.nationality2);
+    };
+
+    this.uploader.uploadAll();
+  }
+}

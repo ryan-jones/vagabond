@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from '../user.service';
+import { SessionService } from '../session.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-my-signup-form',
   templateUrl: './my-signup-form.component.html',
   styleUrls: ['./my-signup-form.component.css'],
-  providers: [UserService]
+  providers: [SessionService]
 })
 export class MySignupFormComponent implements OnInit {
 
-  form = {
+  newUser = {
     name: '',
     username: '',
     password: '',
@@ -20,28 +21,27 @@ export class MySignupFormComponent implements OnInit {
   user: any;
   error: string;
 
-  constructor(private userService: UserService) { }
+  constructor(
+  	private session: SessionService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
 
   }
 
   signup() {
-    this.userService.signup(this.form)
-      .subscribe(
-        (user) => this.successCb(user),
-        (err) => this.errorCb(err)
-      );
-  }
-
-
-    errorCb(err) {
-    this.error = err;
-    this.user = null;
-  }
-
-  successCb(user) {
-    this.user = user;
-    this.error = null;
+  	this.session.signup(this.newUser)
+      .subscribe(result => {
+          if (result === true) {
+              // login successful
+              console.log('result ok', result);
+              this.router.navigate(['/user']);
+          } else {
+          		console.log('result ko', result);
+              // login failed
+              // this.error = 'Username or password is incorrect';
+          }
+      });
   }
 }

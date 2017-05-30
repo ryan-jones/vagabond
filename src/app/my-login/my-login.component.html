@@ -1,45 +1,58 @@
-<form (ngSubmit)="submitForm(myForm)" #myForm="ngForm" novalidate *ngIf="!user">
+<div class="fluid-container">
+  <div class="col-md-3">
 
-      <p> Username (your email address)
-        <input type="text" name="username" [(ngModel)]="formInfo.username" #myUsername="ngModel" required />
-      </p>
-          <div *ngIf="myUsername.errors && (myUsername.dirty || myUsername.touched)">
-            <p class="error" [hidden]="!myUsername.errors.required">
-              Oy! An email-based username is required.
-            </p>
-          </div>
-      <p> Password
-        <input type="password" name="password" [(ngModel)]="formInfo.password" #myPassword="ngModel" required  minlength="6"/>
-      </p>
-          <div *ngIf="myPassword.errors && (myPassword.dirty || myPassword.touched)">
-            <p class="error" [hidden]="!myPasswords.errors.minlength">
-              Sorry! Passwords are required and must be at least 6 characters long.
-            </p>
-          </div>
-          <!-- <div *ngIf="myPassword.errors && (myPassword.dirty || myPassword.touched)">
-            <p class="error" [hidden]="!myPassword.errors.required">
-              Oy! A Password is required.
-            </p>
-          </div> -->
+  </div>
+  <div class="col-md-6 form-box">
+    <form (ngSubmit)="submitForm(myForm)" #myForm="ngForm" novalidate *ngIf="!user">
 
-      <button type="submit" (click)="login()"> Login </button>
-  </form>
+          <p>
+            <input type="text" name="username" [(ngModel)]="formInfo.username" #myUsername="ngModel" placeholder="My Username" required />
+          </p>
+              <div *ngIf="myUsername.errors && (myUsername.dirty || myUsername.touched)">
+                <p class="error" [hidden]="!myUsername.errors.required">
+                  Oy! An email-based username is required.
+                </p>
+              </div>
+          <p>
+            <input type="password" name="password" [(ngModel)]="formInfo.password" placeholder="My Password"#myPassword="ngModel" required  minlength="6"/>
+          </p>
+              <div *ngIf="myPassword.errors && (myPassword.dirty || myPassword.touched)">
+                <p class="error" [hidden]="!myPasswords.errors.minlength">
+                  Sorry! Passwords are required and must be at least 6 characters long.
+                </p>
+              </div>
+              <!-- <div *ngIf="myPassword.errors && (myPassword.dirty || myPassword.touched)">
+                <p class="error" [hidden]="!myPassword.errors.required">
+                  Oy! A Password is required.
+                </p>
+              </div> -->
 
-<div>
-  <p>
-    Don't have an account?
-  </p>
-  <button type="submit" (click)="goToSignup()" name="submit">Signup</button>
-</div>
+          <button type="submit" (click)="login()"> Login </button>
+      </form>
 
-<div *ngIf="user">
-  <h2> Hi {{user.name}}! You are now logged in as {{ user.username }}!! </h2>
-  <p> Here's the user object </p>
-  <pre> {{ user | json }} </pre>
+    <div>
+      <h4>
+        Don't have an account?
+      </h4>
+      <button type="submit" (click)="goToSignup()" name="submit">Signup</button>
+    </div>
 
-  <p *ngIf="privateData"> Here's some data fetched from a protected API </p>
-  <pre> {{ privateData | json }} </pre>
+    <div *ngIf="user">
+      <h2> Hi {{user.name}}! You are now logged in as {{ user.username }}!! </h2>
+      <p> Here's the user object </p>
+      <pre> {{ user | json }} </pre>
 
-  <button (click)="logout()"> logout </button>
-  <button (click)="getPrivateData()"> Get private data </button>
+      <p *ngIf="privateData"> Here's some data fetched from a protected API </p>
+      <pre> {{ privateData | json }} </pre>
+
+      <button (click)="logout()"> logout </button>
+      <button (click)="getPrivateData()"> Get private data </button>
+    </div>
+  </div>
+  <div class="col-md-3">
+
+  </div>
+
+
+
 </div>

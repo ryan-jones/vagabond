@@ -42,6 +42,8 @@ export class MyHomeComponent implements OnInit {
   locationIndex;
   allMarkers: Array<any> = [];
   allFlightPaths: Array<any> = [];
+  allTravelArray: Array<any> = [];
+  colorLayers: Array<any> = [];
 
 
   freeLayer;
@@ -161,6 +163,7 @@ export class MyHomeComponent implements OnInit {
      this.place = autocomplete.getPlace()
 
      })
+
   }
 
 //**************** total days*********************
@@ -180,62 +183,6 @@ totalDays(){
 
 
 
-//*************** Creates a point/polyline on the map **********
-  createPoint(){
-
-    //date input field
-    this.place.date = document.getElementById('new-date')['valueAsDate'];
-    this.place.date.autocomplete;
-    this.locations.push(this.place);
-    this.dates.push(this.place.date);
-
-//turns dates into numerical values for comparison
-    if(this.dates.length >=0){
-      this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
-      if(isNaN(this.diffDays)===true){
-        this.diffDays = 0;
-      }
-    }
-
-    //array of differences between dates to be loaded on the view
-    this.itineraryDays.push(this.diffDays);
-    this.totalDays();
-
-//geocodes the address, creates a marker and polyline segment
-    this.geocoder = new google.maps.Geocoder();
-    var that = this;
-	  this.address = this.newAddress;
-
-	  this.geocoder.geocode({'address': this.address}, function(results, status) {
-
-	     if (status === 'OK') {
-         var point = {lat: that.place.geometry.location.lat(), lng: that.place.geometry.location.lng()}
-
-
-	       that.arrayOfTravel.push(point);
-
-         that.flightPath = new google.maps.Polyline({
-             path: that.arrayOfTravel,
-             geodesic: true,
-             strokeColor: 'yellow',
-             strokeOpacity: 1.0,
-             strokeWeight: 4,
-
-           });
-           that.allFlightPaths.push(that.flightPath)
-         that.flightPath.setMap(that.map);
-         that.marker = new google.maps.Marker({
-           position: point,
-           map: that.map
-         })
-         that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
-         that.allMarkers.push(that.marker)
-	     } else {
-	        alert('Geocode was not successful for the following reason: ' + status);
-	     }
-	  });
-
-  }
 
 
 
@@ -251,11 +198,10 @@ totalDays(){
 
   let colorsArray = {
     visaFree: ['red', 'blue'],
-    visaOnArrival: ['black', 'white']
+    visaOnArrival: ['yellow', 'green']
   }
   let index = 0
   this.showCountries(countriesArray, colorsArray, index);
-
 }
 
 //********************   creates country data layers ***************
@@ -322,26 +268,90 @@ totalDays(){
       } //showCountries
 
 
+      //*************** Creates a point/polyline on the map **********
+        createPoint(){
+
+          //date input field
+          this.place.date = document.getElementById('new-date')['valueAsDate'];
+          this.place.date.autocomplete;
+          this.locations.push(this.place);
+          this.dates.push(this.place.date);
+
+      //turns dates into numerical values for comparison
+          if(this.dates.length >=0){
+            this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
+            if(isNaN(this.diffDays)===true){
+              this.diffDays = 0;
+            }
+          }
+
+          //array of differences between dates to be loaded on the view
+          this.itineraryDays.push(this.diffDays);
+          this.totalDays();
+
+      //geocodes the address, creates a marker and polyline segment
+          this.geocoder = new google.maps.Geocoder();
+          var that = this;
+      	  this.address = this.newAddress;
+
+      	  this.geocoder.geocode({'address': this.address}, function(results, status) {
+
+      	     if (status === 'OK') {
+               var point = {lat: that.place.geometry.location.lat(), lng: that.place.geometry.location.lng()}
+
+
+      	       that.arrayOfTravel.push(point);
+               that.allTravelArray.push(that.arrayOfTravel);
+
+               that.flightPath = new google.maps.Polyline({
+                   path: that.arrayOfTravel,
+                   geodesic: true,
+                   strokeColor: 'yellow',
+                   strokeOpacity: 1.0,
+                   strokeWeight: 4,
+
+                 });
+                 that.allFlightPaths.push(that.flightPath)
+               that.flightPath.setMap(that.map);
+               that.marker = new google.maps.Marker({
+                 position: point,
+                 map: that.map
+               })
+
+
+               that.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+               that.allMarkers.push(that.marker)
+               console.log('allFlightPaths create', that.allFlightPaths)
+               console.log('allMarkers create', that.allMarkers)
+      	     } else {
+      	        alert('Geocode was not successful for the following reason: ' + status);
+      	     }
+      	  });
+
+        }
+
+
         deletePoint(locationInput){
 
           this.allFlightPaths.forEach((flightPath)=>{
-            flightPath.setMap(null);
+            flightPath.setMap(null)
           })
-          this.allFlightPaths = []
-          console.log('flightPaths', this.allFlightPaths)
+         this.allFlightPaths = []
+
           this.allMarkers.forEach((marker)=>{
-            marker.setMap(null);
+             marker.setMap(null);
+
           })
           this.allMarkers = []
-          console.log('allMarkers', this.allMarkers)
+
+
           this.locations = this.locations.filter((savedLocation)=>{
             return savedLocation.id != locationInput.value
           })
-          console.log('this.locations', this.locations)
 
-          this.arrayOfTravel = []
-          console.log('arraOfTravel', this.arrayOfTravel)
+           this.arrayOfTravel = []
           this.locations.forEach((location)=>{
+
             var point = {lat: location.geometry.location.lat(), lng: location.geometry.location.lng()}
 
 
@@ -356,14 +366,16 @@ totalDays(){
 
                });
              this.flightPath.setMap(this.map);
+
+
+             this.allFlightPaths.push(this.flightPath)
              this.marker = new google.maps.Marker({
                position: point,
                map: this.map
              })
              this.marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png')
+              this.allMarkers.push(this.marker)
           })
-
-
 
         }
   }

@@ -28,4 +28,8 @@ export class MyNavComponent implements OnInit {
     goToSignup(){
       this.router.navigate(['signup']);
     }
+
+    goToUser(){
+      this.router.navigate(['user']);
+    }
 }

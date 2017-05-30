@@ -405,19 +405,9 @@ makeBlack(){
 
      this.arrayOfTravel = []
 
-     if(this.dates.length >=0){
-       this.diffDays = (Math.abs(new Date(this.dates[this.dates.length-1]).getTime() - new Date(this.dates[this.dates.length - 2]).getTime())) / (1000 * 3600 * 24);
-       if(isNaN(this.diffDays)===true){
-         this.diffDays = 0;
-       }
-     }
 
-     //array of differences between dates to be loaded on the view
-     this.itineraryDays.push(this.diffDays);
-     this.totalDays();
     this.locations.forEach((location)=>{
 
-      this.dates.push(this.locations[location].date);
 
 
       var point = {lat: location.geometry.location.lat(), lng: location.geometry.location.lng()}
@@ -447,17 +437,18 @@ makeBlack(){
 
   }
 
-  submit() {
 
-    this.newItinerary.plan = this.arrayOfTravel;
-
-    this.uploader.onBuildItemForm = (item, form) => {
-      form.append('name', this.newItinerary.name);
-      form.append('plan', this.newItinerary.plan);
-      form.append('nationality1', this.newItinerary.nationality1);
-      form.append('nationality2', this.newItinerary.nationality2);
-    };
-
-    this.uploader.uploadAll();
-  }
+  // submit() {
+  //
+  //   this.newItinerary.plan = this.arrayOfTravel;
+  //
+  //   this.uploader.onBuildItemForm = (item, form) => {
+  //     form.append('name', this.newItinerary.name);
+  //     form.append('plan', this.newItinerary.plan);
+  //     form.append('nationality1', this.newItinerary.nationality1);
+  //     form.append('nationality2', this.newItinerary.nationality2);
+  //   };
+  //
+  //   this.uploader.uploadAll();
+  // }
 }

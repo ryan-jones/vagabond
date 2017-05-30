@@ -36,7 +36,7 @@
           <div class="col-md-6 nation-box">
             <div class="form-group">
   						<label for="nationalityInput"> Select Nationality 1</label>
-  						<select [(ngModel)]="selectedNationalityId1" [(ngModel)]="newItinerary.nationality1" class="form-control" id="nationality" name="nationality" >
+  						<select [(ngModel)]="selectedNationalityId1"  class="form-control" id="nationality" name="nationality" >
                   <option value = {{country._id}} *ngFor="let country of countries">{{country.name}}</option>
   						</select>
   					</div>
@@ -44,7 +44,7 @@
           <div class="col-md-6 nation-box">
             <div class="form-group">
   						<label for="nationalityInput2"> Select Nationality 2 (optional)</label>
-  						<select [(ngModel)]="selectedNationalityId2" [(ngModel)]="newItinerary.nationality2" class="form-control" id="nationality2" name="nationality2" >
+  						<select [(ngModel)]="selectedNationalityId2" class="form-control" id="nationality2" name="nationality2" >
                   <option value = {{country._id}} *ngFor="let country of countries2">{{country.name}}</option>
   						</select>
   					</div>
@@ -62,7 +62,7 @@
           <div class="col-md-12" ng-change="totalDays()">
             <div class="itinerary">
               <h4><span class="white">Create your itinerary</span></h4>
-              <input id="new-name" [(ngModel)]= "newitinerary.name" type="text" placeholder="Create an itinerary name" />
+              <!-- <input id="new-name" [(ngModel)]= "newItinerary.name" type="text" placeholder="Create an itinerary name" /> -->
         			<input id="new-address" [(ngModel)]="newAddress" type="text" name="address" placeholder="location" >
               <input id="new-date" value="" type="date" name="date"/>
         			<input id="new-submit" (click)="createPoint()" type="submit" name="" value="Add to list">

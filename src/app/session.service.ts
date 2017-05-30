@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Router, CanActivate } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
-let jwtDecode =  require('jwt-decode');
+import {jwtDecode} from 'jwt-decode';
 
 @Injectable()
 export class SessionService implements CanActivate {

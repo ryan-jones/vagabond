@@ -15,8 +15,8 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
-          <li *ngIf="this.session.isAuth"> <a > <span class="white"> Welcome, {{this.session.user}} </span> </a> </li>
-          <li *ngIf="this.session.isAuth"> <a (click)="goToUser()"> <span class="white"> User </span> </a> </li>
+          <li *ngIf="this.session.isAuth"> <a > <span class="white"> Welcome, {{user.name}} </span> </a> </li>
+          <li *ngIf="this.session.isAuth"> <a (click)="goToUser()"> <span class="white"> Profile </span> </a> </li>
           <li> <a (click)="goToAbout()"> <span class="white"> About</span> </a> </li>
           <li *ngIf="!this.session.isAuth"> <a (click)="goToLogin()"> <span class="white"> Login</span> </a> </li>
           <li *ngIf="!this.session.isAuth"> <a (click)="goToSignup()"> <span class="white"> Signup</span> </a> </li>

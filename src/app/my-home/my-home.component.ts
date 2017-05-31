@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {CountryService} from '../country.service';
 import {WarningService} from '../warning.service';
 import {SessionService} from '../session.service';
+import {UserService} from '../user.service';
 import { FileUploader } from "ng2-file-upload";
 
 declare var google: any;
@@ -11,13 +12,13 @@ declare var google: any;
   selector: 'app-my-home',
   templateUrl: './my-home.component.html',
   styleUrls: ['./my-home.component.css'],
-  providers: [CountryService, WarningService, SessionService]
+  providers: [CountryService, WarningService, SessionService, UserService]
 })
 
 export class MyHomeComponent implements OnInit {
 
   uploader: FileUploader = new FileUploader({
-    url: `http://localhost:3000/api/phones/`,
+    url: `http://localhost:3000/api/users/`,
     authToken: `JWT ${this.session.token}`
   });
 
@@ -67,7 +68,7 @@ export class MyHomeComponent implements OnInit {
 
 
 
-  constructor(private country: CountryService, private status: WarningService, private session: SessionService) { }
+  constructor(private country: CountryService, private status: WarningService, private session: SessionService, private userService: UserService) { }
 
 
 

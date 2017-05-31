@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionService } from '../session.service';
+import{ UserService} from '../user.service';
 import {Router} from '@angular/router';
 
 
@@ -18,7 +19,7 @@ export class MyLoginComponent implements OnInit {
 
   error: string;
 
-  constructor(private router: Router, private session: SessionService) { }
+  constructor(private router: Router, private session: SessionService, private userService: UserService) { }
 
     ngOnInit() {
     }
@@ -27,13 +28,23 @@ export class MyLoginComponent implements OnInit {
         this.session.login(this.user)
     				        .subscribe(result => {
     				            if (result === true) {
+
+                            console.log(result)
     			                // login successful
-    			                this.router.navigate(['/user']);
+    			                // this.router.navigate(['user']);
     			         			} else {
     			                // login failed
     			                this.error = 'Username or password is incorrect';
     				            }
     				        });
+      }
+
+      goToSignup(){
+        this.router.navigate(['signup']);
+      }
+
+      logout(){
+        this.session.logout();
       }
 
 }

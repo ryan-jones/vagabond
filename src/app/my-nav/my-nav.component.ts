@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
 import { SessionService } from '../session.service';
+import {UserService} from '../user.service';
 
 @Component({
   selector: 'app-my-nav',
@@ -8,13 +9,20 @@ import { SessionService } from '../session.service';
   styleUrls: ['./my-nav.component.css']
 })
 export class MyNavComponent implements OnInit {
+  user: any;
 
   constructor(
     private router: Router,
-    private session: SessionService
+    private session: SessionService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
+    let user = JSON.parse(localStorage.getItem("user"))
+    this.userService.get(user._id)
+      .subscribe((user)=> {
+        this.user = user
+      });
   }
 
   goToAbout(){
@@ -26,7 +34,7 @@ export class MyNavComponent implements OnInit {
     }
 
     goToHome(){
-      this.router.navigate(['/']);
+      this.router.navigate(['home']);
     }
 
     goToSignup(){

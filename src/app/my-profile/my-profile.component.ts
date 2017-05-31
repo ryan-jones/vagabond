@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import {UserService} from '../user.service';
 
 
 @Component({
@@ -18,27 +19,15 @@ export class MyProfileComponent implements OnInit {
     error: string;
 
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit() {
-    // this.userService.isLoggedIn()
-    //   .subscribe(
-    //     (user) => this.successCb(user)
-    //   );
+    let user = JSON.parse(localStorage.getItem("user"))
+    this.userService.get(user._id)
+      .subscribe((user)=> {
+        this.user = user
+      });
   }
 
-  // getUser(){
-  //   this.userService.get()
-  //     .subscribe((user)=> this.user = user)
-  // }
 
-  errorCb(err) {
-    this.error = err;
-    this.user = null;
-  }
-
-  successCb(user) {
-    this.user = user;
-    this.error = null;
-  }
 }

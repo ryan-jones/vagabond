@@ -36,7 +36,7 @@ export class MySignupFormComponent implements OnInit {
           if (result === true) {
               // login successful
               console.log('result ok', result);
-              this.router.navigate(['/user']);
+              // this.router.navigate(['user']);
           } else {
           		console.log('result ko', result);
               // login failed

@@ -1,7 +1,7 @@
 <div class="container-fluid" id="home-top">
   <div class="col-md-2 left-side">
     <div>
-       <h4>Welcome back, Ryan</h4>
+       <h4>Welcome back, {{user.name}}</h4>
     </div>
     <div class="img-div">
       <img class="img-circle" src="https://cdn4.iconfinder.com/data/icons/user-avatar-flat-icons/512/User_Avatar-35-512.png" />
@@ -22,9 +22,5 @@
 
   <div class="col-md-10 right-side" *ngIf="view == itinerary">
     <app-profile-itineraries ></app-profile-itineraries>
-  </div>
-
-  <div class="col-md-10 right-side" *ngIf="view == country">
-    <app-profile-country-visit></app-profile-country-visit>
   </div>
 </div>
